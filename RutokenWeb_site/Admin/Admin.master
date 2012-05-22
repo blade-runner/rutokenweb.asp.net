@@ -1,0 +1,18 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/Rutoken.Master" AutoEventWireup="true" CodeBehind="Admin.master.cs" Inherits="RutokenWebSite.Admin.Admin" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="cpMain" runat="server">
+        <div class="screen">
+        <div class="data">
+            <h1>
+                Личный кабинет</h1>
+             <asp:Button ID="btnLogout" runat="server" OnClick="logout" Text="Выход" CssClass="fr" />
+            <ul>
+                <li><a href="/Admin/">Упраление токенами</a></li>
+                <li><a href="/Admin/Forms.aspx">Подпись форм</a></li>
+            </ul>
+            
+            </div>
+    </div>
+            <asp:ContentPlaceHolder ID="cpAdmin" runat="server">
+        
+        </asp:ContentPlaceHolder>
+</asp:Content>

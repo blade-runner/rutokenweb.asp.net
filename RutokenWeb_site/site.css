@@ -1,0 +1,190 @@
+﻿html, body, div, span, h1, h2, h3, h4, h5, h6,
+p, blockquote, a, em, img, small, strong,
+dl, dt, dd, fieldset, form, label, legend {
+  margin: 0; padding: 0; border: 0; outline: 0;
+  vertical-align: baseline; background: transparent;
+}
+table, tr, th, td {
+  margin: 0; padding: 0; border: 0; outline: 0;
+  background: transparent; border-collapse: collapse;
+}
+html, body {
+  color: #333;
+  font: normal 14px/20px "Trebuchet MS", Tahoma, Arial, Helvetica, Sans-Serif, Verdana;
+}
+body {
+  padding: 0;
+    background: #0054a5; 
+}
+a,
+a:link,
+a:visited {
+  color: #0054a5;
+}
+a:hover {
+  color: #003f7c;
+}
+input[type="button"], input[type="submit"] {
+  padding: 3px;
+  border: 1px solid #ccc;
+  width: 200px;
+  background: #f5f5f5;
+    color: #777;
+    font-weight: bold;
+}
+input[type="button"]:hover, input[type="submit"]:hover {
+    background: #f8f8f8;
+    color: #333;
+}
+.layout {
+  margin: 100px auto 0;
+  overflow: hidden;
+}
+.screen {
+  margin: 15px;
+  padding: 20px 0;
+  overflow: hidden;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.7);
+  /* Old Alternate Fix */
+  -moz-border-radius:     5px;
+  -khtml-border-radius:   5px;
+  -webkit-border-radius:  5px;
+  -moz-box-shadow:        0 0 15px rgba(0,0,0,0.7);
+  -webkit-box-shadow:     0 0 15px rgba(0,0,0,0.7);
+  -khtml-box-shadow:      0 0 15px rgba(0,0,0,0.7);
+  /* Old MSIE Fix */
+  *padding: 20px 0 10px 0;
+  *border: 4px solid #003f7c;
+}
+/* Block Width */
+.layout.login,
+.layout.remember {
+  width: 530px;
+}
+.layout.login .screen,
+.layout.remember .screen {
+  width: 500px;
+}
+.layout.registration {
+  width: 730px;
+}
+.layout.registration .screen{
+  width: 700px;
+}
+.layout.admin {
+    margin-top: 0px;
+    width: 700px;
+}
+.layout.admin .screen {
+        padding: 20px;
+}
+.screen .head {
+  clear: both;
+  overflow: hidden;
+}
+.head h2 {
+  float: left;
+  width: 70%;
+  padding: 10px 20px;
+  background-color: #0054a5;
+  color: #fff;
+  font-size: 18px;
+  border-radius: 0 3px 3px 0;
+  /* Old MSIE Fix */
+  *background-color: #003f7c;
+}
+
+.screen .data {
+  overflow: hidden;
+  margin: 0 20px;
+  padding: 10px 0;
+}
+.data table {
+  width: 300px;
+    margin: 0 auto;
+}
+.data table th {
+  width: 150px;
+  padding: 6px 3px;
+  text-align: right;
+  font-weight: normal;
+}
+.data table td {
+  text-align: right;
+  padding: 3px;
+}
+.data p { margin: 2em 0;}
+.screen .navy {
+  clear: both;
+  overflow: hidden;
+}
+.navy p {
+  float: right;
+  width: 77%;
+  padding: 10px 20px 10px 0;
+  border-radius: 3px 0 0 3px;
+  background-color: #aebc37;
+  text-align: right;
+  color: #fff;
+}
+.navy p span {
+  font-weight: bold;
+}
+.navy a,
+.navy a:link,
+.navy a:visited {
+  color: #fff;
+}
+.navy a:hover {
+  color: #ebeecd;
+}
+
+.OrdersGr {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border-collapse: collapse;
+    font-size: 12px;
+    line-height: 15px;
+    margin: 0 15px;
+    width: 96%;
+}
+.OrdersGr td {
+    border-bottom: 1px solid #E6EEF6;
+    padding: 0.5em;
+    vertical-align: middle;
+}
+.OrdersGr td.OrderDtl {
+    border: 0 none;
+    padding: 0;
+}
+.OrdersGr tr.odd {
+    background-color: #E6EEF6;
+}
+.OrdersGr td.OrderDtl:hover {
+    background: none repeat scroll 0 0 #FFFFFF;
+}
+.OrdersGr tr.OrderHd:hover, .OrdersGr tr.OrderHd, .OrdersGr th {
+    background-color: #0054A5 !important;
+    color: #FFFFFF;
+    padding: 3px;
+    text-align: center;
+}
+.OrdersGr tr.OrderHd td, .OrdersGr th {
+    font-weight: bold;
+    text-align: left;
+}
+.OrdersGr .uplStatus {
+    width: 50%;
+}
+
+.fr { float: right;}
+
+.round_3px {  background-color: #f5f5f5;
+    padding: 10px;margin: 10px 0;border-radius: 3px;  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);}
+.formtable { width: 100%;}
+.formtable input, .formtable textarea { width: 380px;padding: 6px;}
+.formtable input.preselect { width: 310px;}
+.formtable select { padding:6px;}
+.formtable th, .formtable td { padding: 5px;}
+.formtable th { border-bottom: 1px dotted #000;text-align: left;font-weight: normal;}
