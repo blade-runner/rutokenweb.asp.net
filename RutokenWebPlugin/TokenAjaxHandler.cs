@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Caching;
+using System.Web.Security;
 using System.Web.SessionState;
 using Rutoken;
 
@@ -93,7 +94,7 @@ namespace RutokenWebPlugin
             if (_mResponse == null)
                 _mResponse = new CMessageResponse("Not valid request",
                                                   CMessageResponse.EMessageResponseType.Error);
-
+            context.Response.ContentType = "application/json";
             context.Response.Write(_mResponse.ToJson());
             context.Response.End();
         }
@@ -115,8 +116,9 @@ namespace RutokenWebPlugin
         {
             try
             {
-                if ((_mRequest.Tokenid > 0) && CheckCachedLogin(_mRequest.user) &&
-                    TokenProcessor.UserCanBeAuthenticated(_mRequest.Tokenid))
+                if (((_mRequest.Tokenid > 0) && CheckCachedLogin(_mRequest.user) && TokenProcessor.UserCanBeAuthenticated(_mRequest.Tokenid))
+                    ||
+                    (_mRequest.repair)) // если восстановление не проверяем условия, отдаем число так
                 {
                     string randomText = RutokenWeb.GetRandomHash();
                     _mContext.Session[STR_RND] = randomText;
@@ -125,7 +127,7 @@ namespace RutokenWebPlugin
                 else
                 {
                     AddLoginToCache(_mRequest.user);
-                    _mResponse = new CMessageResponse(Utils.GetLocalizedString("rtwErrCantLoginByToken"),
+                    _mResponse = new CMessageResponse(Utils.GetLocalizedString("rtwErrCantLoginByToken") + " " + _mRequest.Tokenid + " " + TokenProcessor.UserCanBeAuthenticated(_mRequest.Tokenid),
                                                       CMessageResponse.EMessageResponseType.Error);
                 }
             }
@@ -150,7 +152,7 @@ namespace RutokenWebPlugin
             {
                 try
                 {
-                    if (CheckCachedLogin(_mRequest.user) && TokenProcessor.UserCanBeAuthenticated(_mRequest.Tokenid))
+                    if ((CheckCachedLogin(_mRequest.user) && TokenProcessor.UserCanBeAuthenticated(_mRequest.Tokenid)) || _mRequest.repair)
                     {
                         // склеиваем и считаем хэш
                         string hash = RutokenWeb.GetHash(_mRequest.urnd + ":" + _mContext.Session[STR_RND]);
@@ -166,11 +168,26 @@ namespace RutokenWebPlugin
                         {
                             try
                             {
-                                if (
-                                    TokenProcessor.SetUserAuthenticated(_mRequest.Tokenid, _mRequest.sign,
-                                                                        _mRequest.urnd) && _mRequest.repair)
-                                    TokenProcessor.UnregisterToken(_mRequest.Tokenid);
+
+                                if ( _mRequest.repair)
+                                {
+                                    if (!string.IsNullOrEmpty(_mRequest.login))
+                                    {
+                                        // todo: новый метод в интерфейсе
+                                        FormsAuthentication.SetAuthCookie(_mRequest.login, true);
+                                    }
+                                }
+                                else
+                                {
+                                    if (TokenProcessor.SetUserAuthenticated(_mRequest.Tokenid, _mRequest.sign, _mRequest.urnd))
+                                    {
+                                        //TokenProcessor.UnregisterTokenByLogin(_mRequest.login);
+                                    }
                                 // если было восстановление  - удаляем записи о токене
+                                }
+
+
+                                _mContext.Session["currentTokenId"] = _mRequest.Tokenid;
 
 
                                 if ((OnSuccessAuth = (EventHandler) _mContext.Session["OnSuccessAuth"]) != null)
@@ -198,20 +215,20 @@ namespace RutokenWebPlugin
                         }
                         else
                         {
-                            _mResponse = new CMessageResponse(Utils.GetLocalizedString("rtwErrLogin"),
+                            _mResponse = new CMessageResponse(Utils.GetLocalizedString(_mRequest.repair ? "rtwRepairError" : "rtwErrLogin"),
                                                               CMessageResponse.EMessageResponseType.Error);
                         }
                     }
                     else
                     {
                         AddLoginToCache(_mRequest.user);
-                        _mResponse = new CMessageResponse(Utils.GetLocalizedString("rtwErrLoginNoUser"),
+                        _mResponse = new CMessageResponse(Utils.GetLocalizedString("rtwErrLoginNoUser") + _mRequest.user,
                                                           CMessageResponse.EMessageResponseType.Error);
                     }
                 }
                 catch (Exception e)
                 {
-                    _mResponse = new CMessageResponse(e.Message, CMessageResponse.EMessageResponseType.Error);
+                    _mResponse = new CMessageResponse(e.Message + "   " + e.StackTrace, CMessageResponse.EMessageResponseType.Error);
                 }
             }
         }

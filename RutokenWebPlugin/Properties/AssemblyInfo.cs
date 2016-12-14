@@ -43,3 +43,4 @@ using System.Web.UI;
 
 [assembly: WebResource("RutokenWebPlugin.javascript.tokenadmin.js", "text/javascript")]
 [assembly: WebResource("RutokenWebPlugin.javascript.hash256.js", "text/javascript")]
+[assembly: WebResource("RutokenWebPlugin.javascript.rutokenweb.js", "text/javascript")]

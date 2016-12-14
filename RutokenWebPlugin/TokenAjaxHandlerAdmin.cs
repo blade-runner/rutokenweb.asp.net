@@ -76,13 +76,13 @@ namespace RutokenWebPlugin
                 }
                 else
                 {
-                    _mResponse = new CMessageResponse(Utils.GetLocalizedString("rtwAjaxError"),
+                    _mResponse = new CMessageResponse(Utils.GetLocalizedString("rtwAjaxError") + "params",
                                                       CMessageResponse.EMessageResponseType.Error);
                 }
             }
             catch (Exception e)
             {
-                _mResponse = new CMessageResponse(Utils.GetLocalizedString("rtwAjaxError") + e.Message,
+                _mResponse = new CMessageResponse(Utils.GetLocalizedString("rtwAjaxError") + "msg" + e.Message,
                                                   CMessageResponse.EMessageResponseType.Error);
             }
         }

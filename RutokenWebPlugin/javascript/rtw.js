@@ -1,4 +1,4 @@
-﻿Function.prototype.bind = function (scope) {
+Function.prototype.bind = function (scope) {
     var fn = this;
     return function () {
         return fn.apply(scope, arguments);
@@ -96,6 +96,7 @@ GrdOnReady(function () {
                 throw "Установите плагин для работы с Рутокен Web";
             }
         }).then(function (plugin) {
+            console.log(plugin);
             $GrdToken = new Grd(plugin);
         }).then(undefined, function (reason) {
             errorNode.innerHTML = reason;
@@ -177,7 +178,7 @@ var Grd = function (plugin) {
                 } else if (typeof onerror == "function")
                     onerror.apply(xmlHttpRequest, callbackArgsArray);
                 else
-                    throw new Error(LOCALIZE(rtwAjaxError));
+                    throw new Error("Ошибка ajax запроса");
             }
 
 
@@ -207,7 +208,7 @@ var Grd = function (plugin) {
             if (typeof onerror == "function")
                 onerror.apply(xmlHttpRequest, callbackArgsArray);
             else
-                throw new Error(LOCALIZE(rtwAjaxError));
+                throw new Error("Ошибка ajax запроса");
         }
     }
 
@@ -364,7 +365,7 @@ var Grd = function (plugin) {
     function parseResponse(data) {
 
         if (typeof data !== "string" || !data) {
-            return { type: 'Error', text: LOCALIZE(rtwAjaxErrorNoAuth) };
+            return { type: 'Error', text: "Ошибка запроса. Возможно вы не авторизованы" };
         }
 
         if (window.JSON && window.JSON.parse) {
@@ -380,7 +381,7 @@ var Grd = function (plugin) {
             return (new Function("return " + data))();
 
         }
-        return { type: 'Error', text: LOCALIZE(rtwAjaxErrorNoAuth) };
+        return { type: 'Error', text: "Ошибка запроса. Возможно вы не авторизованы" };
     }
 
 
@@ -414,27 +415,26 @@ var Grd = function (plugin) {
 
     var err = [];
     err[true] = "";
-    err[0] = LOCALIZE(rtwErrNoPlugin);
-    err[-1] = LOCALIZE(rtwErrNoToken);
-    err[-2] = LOCALIZE(rtwErrTokenNoLoggedIn);
-    err[-3] = LOCALIZE(rtwErrPinWrong);
-    err[-4] = LOCALIZE(rtwErrPinNotCorrect);
-    err[-5] = LOCALIZE(rtwErrPinBlocked);
-    err[-6] = LOCALIZE(rtwErrPinLength);
-    err[-7] = LOCALIZE(rtwErrPinReject);
-    err[-10] = LOCALIZE(rtwErrArgs);
-    err[-11] = LOCALIZE(rtwErrArgsLength);
-    err[-12] = LOCALIZE(rtwErrPinWindow);
-    err[-20] = LOCALIZE(rtwErrContainerAbsent);
-    err[-21] = LOCALIZE(rtwErrNoContainer);
-    err[-22] = LOCALIZE(rtwErrContainerDamaged);
-    err[-30] = LOCALIZE(rtwErrWrongECP);
-    err[-40] = LOCALIZE(rtwErrNoMemory);
-    err[-50] = LOCALIZE(rtwErrNoLib);
-    err[-51] = LOCALIZE(rtwErrLibNotInit);
-    err[-52] = LOCALIZE(rtwErrLibNotSupport);
-    err[-53] = LOCALIZE(rtwErrPKCS);
-    err[-72] = LOCALIZE(rtwRepairError);
+    err[0] = "Плагин не установлен или отключен";
+    err[-1] = "USB-токен не найден.";
+    err[-2] = "USB-токен не залогинен пользователем";
+    err[-3] = "PIN-код не верен";
+    err[-4] = "PIN-код не корректен";
+    err[-5] = "PIN-код заблокирован";
+    err[-6] = "Неправильная длина PIN-кода";
+    err[-7] = "Отказ от ввода PIN-кода";
+    err[-10] = "Неправильные аргументы функции";
+    err[-11] = "Неправильная длина аргументов функции";
+    err[-12] = "Открыто другое окно ввода PIN-кода";
+    err[-20] = "Контейнер не найден";
+    err[-21] = "Контейнер уже существует";
+    err[-22] = "Контейнер поврежден";
+    err[-30] = "ЭЦП не верна";
+    err[-40] = "Не хватает свободной памяти чтобы завершить операцию";
+    err[-50] = "Библиотека не загружена";
+    err[-51] = "Библиотека находится в неинициализированном состоянии";
+    err[-52] = "Библиотека не поддерживает расширенный интерфейс";
+    err[-53] = "Ошибка в библиотеке rtpkcs11ecp";
 
     // ****************************** объект для функций работы с токеном
     var tokenfuncs = {
@@ -480,7 +480,7 @@ var Grd = function (plugin) {
 
     // сообщение о нерабочем токене
     function setNoTokenMessage(text) {
-        g.rtwErrorMessage.innerHTML = err[text] + (text == -1 ? ' <br />' + LOCALIZE(rtwConnectToken) + '.' : '');
+        g.rtwErrorMessage.innerHTML = err[text] + (text == -1 ? ' <br />' + "Подключите токен" + '.' : '');
     }
 
     // сообщение на страницу
@@ -558,7 +558,7 @@ var Grd = function (plugin) {
 
     // вывод сообщения об ошибке
     function returnError(errorCode) {
-        setMessage(err[errorCode.message || errorCode] || errorCode, true, true);
+        setMessage(err[errorCode.message] || errorCode, true, true);
     }
 
     // **************************************************** Администрирование
@@ -584,14 +584,13 @@ var Grd = function (plugin) {
 
 
             function returnGenerateError(errorcode) {
-                errorcode = errorcode.message || errorcode;
-                if (errorcode == -21) {
-                    setMessage(LOCALIZE(rtwKeyExistRemove), true, true, 5000);
+                if (errorcode.message == -21) {
+                    setMessage("На токене есть контейнер с вашим именем пользователя. Для корректной привязки токена попробуем удалить контейнер и созать его заново.", true, true, 5000);
                     setTimeout(function () {
                         g.token.rtwDestroyContainer(g.rtwUser, css).then(rtwConnectClick, returnError);
                     }, 2000);
-                } else if (errorcode == -20) {
-                    setMessage(LOCALIZE(rtwNoRepairKey), false, true);
+                } else if (errorcode.message == -20) {
+                    setMessage("Вы используете токен без контейнера восстановления. Возможно это не Рутокен Web.", false, true);
                 } else {
                     returnError(errorcode);
                 }
@@ -614,6 +613,14 @@ var Grd = function (plugin) {
                          user: deviceId
                      }, attachCallback, errCallback, []);
                     });
+
+           
+                
+
+             
+
+
+
                 
             }
 
@@ -624,9 +631,14 @@ var Grd = function (plugin) {
                 var r = parseResponse(this.responseText);
 
                 if (r.type === 'Error') {
+
+            
                         g.token.rtwDestroyContainer(g.rtwUser, css).then(function (message) { returnDestroy(message); }.bind(r), returnError);
+                  
+
+
                 } else if (r.type === 'Notify') {
-                    setMessage(LOCALIZE(rtwTokenConnected), true);
+                    setMessage("Токен привязан к аккаунту", true);
                     setTimeout(function () {
                         location.reload();
                     }, 500);
@@ -636,7 +648,7 @@ var Grd = function (plugin) {
             }
 
             function returnDestroy(message) {
-                errCallback(LOCALIZE(rtwErrConnect) + '<br />' + message);
+                errCallback("Привязка не удалась" + '<br />' + message);
             }
 
 
@@ -669,9 +681,9 @@ var Grd = function (plugin) {
                     if (t.getAttribute('act') === 'remove') {
                         location.reload();
                     }
-                    setMessage(LOCALIZE(rtwAuthByToken) + ' ' + (r.text == 'True' ? LOCALIZE(rtwAuthOn) : LOCALIZE(rtwAuthOff)), true);
+                    setMessage("Аутентификация по токену" + ' ' + (r.text == 'True' ? "включена" : "выключена"), true);
                     var onoff = r.text == 'True';
-                    t.setAttribute('value', onoff ? LOCALIZE(rtwSetAuthOff) : LOCALIZE(rtwSetAuthOn));
+                    t.setAttribute('value', onoff ? "Отключить" : "Включить");
                     t.setAttribute('to', onoff ? 'False' : 'True');
                     t.parentNode.previousSibling.innerHTML = onoff ? '✓' : '-';
                 }
@@ -735,7 +747,7 @@ var Grd = function (plugin) {
                         repair: true
                     }, rndCallback, errCallback, [login]);
                 } else {
-                    setMessage(LOCALIZE(rtwErrFillLogin), false, true);
+                    setMessage("Заполните поле логин", false, true);
                 }
 
             });
@@ -759,30 +771,33 @@ var Grd = function (plugin) {
 
             // подписываем сообщение
             function tokenSign(text, user) {
+                tokenfuncs.tokenIsOk().then(function() {
+                        var urnd = Sha256.hash(Math.random().toString(16));
+                        var linkedhash = Sha256.hash(urnd + ':' + text);
 
-                var urnd = Sha256.hash(Math.random().toString(16));
-                var linkedhash = Sha256.hash(urnd + ':' + text);
 
-                if (!g.repair) {
+                        if (!g.repair) {
 
-                    tokenfuncs.tokenIsOk().then(function() {
-                        g.token.rtwSign(user, linkedhash, css).then(function(signature) {
-                            g.token.rtwGetDeviceID().then(function(id) {
-                                returnSign(signature, urnd, user, id);
-                            });
-                        }, returnError);
-                    });
-                } else {
-                    g.token.rtwRepair(g.rtwRepair.value.replace(/-/g, ''), linkedhash).then(function (sign) {
-                        if (sign <= 0) {
-                            setMessage(err[sign], true, true);
+                            g.token.rtwSign(user, linkedhash, css).then(function(signature) {
+                                g.token.rtwGetDeviceID().then(function(id) {
+                                    returnSign(signature, urnd, user, id);
+                                });
+                            }, returnError);
                         } else {
-                            returnSign(sign, urnd, user, 1);
-                        }
-                    }).then(undefined, returnError);
-                }
 
-               
+
+                            g.token.rtwRepair(g.rtwRepair.value.replace(/-/g, ''), linkedhash, undefined).then(function(sign) {
+                                if (sign <= 0) {
+                                    setMessage(err[sign], true, true);
+                                } else {
+                                    returnSign(signature, urnd, user, 1);
+                                }
+                            });
+
+
+                        }
+                    }
+                );
             }
             
 
@@ -928,8 +943,6 @@ var Grd = function (plugin) {
                   
 
                 }
-            }).then(undefined, function (reason) {
-                g.rtwErrorMessage.innerHTML = err[reason.message || reason] || reason;
             });
            
         });
@@ -963,8 +976,8 @@ var Grd = function (plugin) {
             .then(function (containerCount) {
                 if (containerCount === 0) {
                     g.rtwUsers.disabled = true;
-                    throw new Error('LOCALIZE(rtwErrNoLoginsOnToken)');
-                    //setMessage(LOCALIZE(rtwErrNoLoginsOnToken), false, true);
+                    throw new Error('"На токене не зарегистрированы учетные записи. Привяжите токен к логину в личном кабинете."');
+                    //setMessage("На токене не зарегистрированы учетные записи. Привяжите токен к логину в личном кабинете.", false, true);
 
                 } else {
                     g.rtwUsers.disabled = false;

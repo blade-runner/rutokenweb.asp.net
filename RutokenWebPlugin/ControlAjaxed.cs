@@ -122,14 +122,19 @@ namespace RutokenWebPlugin
         /// </summary>
         private void EnsureRutokenPlugin()
         {
-            var rtObject = new HtmlGenericControl("object") {ClientIDMode = ClientIDMode.Static, ID = JStokenObjectID};
-            rtObject.Attributes.Add("type", "application/x-rutoken");
-            rtObject.Attributes.Add("width", "0");
-            rtObject.Attributes.Add("height", "0");
+            Utils.AddScriptToPage("rutokenweb.js", Page, GetType());
 
-            var rtParam = new HtmlGenericControl("param") {TagName = "onload"};
-            rtParam.Attributes.Add("value", "pluginit");
-            rtObject.Controls.Add(rtParam);
+            //var rtObject = new HtmlGenericControl("object") {ClientIDMode = ClientIDMode.Static, ID = JStokenObjectID};
+            //rtObject.Attributes.Add("type", "application/x-rutoken");
+            //rtObject.Attributes.Add("width", "0");
+            //rtObject.Attributes.Add("height", "0");
+
+            //var rtParam = new HtmlGenericControl("param") {TagName = "onload"};
+            //rtParam.Attributes.Add("value", "pluginit");
+            //rtObject.Controls.Add(rtParam);
+
+         
+
 
             // ищем контрол с возможностью добавить и кидаем объект туда
             bool bControlAdded = false;
@@ -139,7 +144,7 @@ namespace RutokenWebPlugin
             }
             foreach (PlaceHolder control in Page.Form.Controls.OfType<PlaceHolder>())
             {
-                (control).Controls.Add(rtObject);
+               // (control).Controls.Add(rtObject);
                 bControlAdded = true;
                 break;
             }
@@ -149,7 +154,7 @@ namespace RutokenWebPlugin
             }
 
             // объект токена
-            Utils.IdToJavaScript(rtObject, JScontrolVar, "token", Page);
+         //   Utils.IdToJavaScript(rtObject, JScontrolVar, "token", Page);
 
             // объект с настройками
             Page.ClientScript.RegisterStartupScript(typeof (Control), "settings",

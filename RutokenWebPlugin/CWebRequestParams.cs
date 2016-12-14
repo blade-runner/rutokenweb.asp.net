@@ -27,7 +27,7 @@ namespace RutokenWebPlugin
                 {
                     PropertyInfo das = GetType().GetProperty(key);
                     Type t = das.PropertyType;
-                    das.SetValue(this, Convert.ChangeType(q[key], t), null);
+                    das.SetValue(this, Convert.ChangeType(HttpUtility.UrlDecode(q[key]), t), null);
                 }
                 catch (Exception)
                 {
@@ -52,10 +52,8 @@ namespace RutokenWebPlugin
         {
             get
             {
-                uint tokenid;
-                return uint.TryParse(user, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out tokenid)
-                           ? tokenid
-                           : tokenid;
+                uint tokenid = 0;
+                return uint.TryParse(user, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out tokenid) ? tokenid  : tokenid;
             }
         }
 
