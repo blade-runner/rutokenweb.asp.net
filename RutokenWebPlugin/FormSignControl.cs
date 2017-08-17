@@ -117,7 +117,6 @@ namespace RutokenWebPlugin
                   sb.AppendFormat("{0:x2}", bt);
               }
               //-------------------------------------------------------------------------------------
-              //  H   A  S   H как считается хз, не совпадает
 
 
               string ret = string.Empty;
